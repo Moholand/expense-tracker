@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    background-color: #92d3ff;
+}
+
+.main-content {
+    display: flex;
+}
+
+.sidebar {
+    background-color: #ffffff;
+    width: 300px;
+    padding: 20px;
+}
+
+.app-title {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 25px;
+    font-weight: 500;
+    color: oklch(0.511 0.262 276.966);
+}
