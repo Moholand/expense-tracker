@@ -23,3 +23,25 @@ body {
     font-weight: 500;
     color: oklch(0.511 0.262 276.966);
 }
+
+.sidebar-list {
+    padding: 20px 0;
+}
+
+.sidebar-list li {
+    display: flex;
+    align-items: center;
+    color: oklch(0.446 0.03 256.802);
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.sidebar-list .active {
+    background-color: rgb(243 244 246);
+    color: oklch(.511 .262 276.966);
+}
+
+.sidebar-list li a {
+    padding-left: 10px;
+}
