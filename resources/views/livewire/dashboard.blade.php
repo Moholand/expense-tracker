@@ -1,6 +1,11 @@
-<div>
-    <h2>All Expenses</h2>
-    <div>
+<div class="dashboard">
+    <h1 class="title">All Expenses</h1>
+    <div class="description">Track and manage your spending</div>
+    <div class="statistics">
+        <div class="total box">div1</div>
+        <div class="transactions box">div2</div>
+    </div>
+    <div class="search">
         <input type="text" wire:model="search" placeholder="Search expenses..." />
         <select wire:model="categoryFilter">
             <option value="">All Categories</option>

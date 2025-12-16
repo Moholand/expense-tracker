@@ -6,13 +6,17 @@ body {
     background-color: #92d3ff;
 }
 
+main {
+    width: 85%;
+}
+
 .main-content {
     display: flex;
 }
 
 .sidebar {
     background-color: #ffffff;
-    width: 300px;
+    width: 15%;
     padding: 20px;
 }
 
@@ -44,4 +48,41 @@ body {
 
 .sidebar-list li a {
     padding-left: 10px;
+}
+
+.dashboard {
+    padding: 35px;
+}
+
+.dashboard .title {
+    color: oklch(.21 .034 264.665);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.dashboard .description {
+    color: oklch(.446 .03 256.802);
+    font-size: 16px;
+}
+
+.dashboard .statistics {
+    padding-top: 20px;
+    display: flex;
+}
+
+.dashboard .statistics .box {
+    width: 50%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 20px;
+    border: 2px solid #e7e7e7;
+}
+
+.dashboard .statistics .total {
+    margin-right: 20px;
+}
+
+.dashboard .search {
+    padding: 20px 0;
 }
