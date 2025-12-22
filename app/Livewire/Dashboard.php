@@ -22,9 +22,14 @@ class Dashboard extends Component
             ->when($this->endDate, fn($query) => $query->whereDate('date', '<=', $this->endDate))
             ->get();
 
+        $total = Expense::query()
+            ->where('user_id', auth()->user()->id)
+            ->sum('amount');
+
         return view('livewire.dashboard', [
             'expenses' => $expenses,
             'categories' => Category::all(),
+            'total' => $total
         ])
         ->layout('layouts.app', ['header' => 'Dashboard']);
     }

@@ -79,8 +79,34 @@ main {
     border: 2px solid #e7e7e7;
 }
 
-.dashboard .statistics .total {
+.dashboard .statistics .total,
+.dashboard .statistics .transactions {
     margin-right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard .statistics .total-expenses, 
+.dashboard .statistics .total-transactions {
+    font-size: 16px;
+    color: oklch(.446 .03 256.802);
+}
+
+.dashboard .statistics .sum {
+    color: oklch(.21 .034 264.665);
+}
+
+.dashboard .statistics .dollar-icon {
+    background-color: oklch(0.93 0.034 272.788);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.dashboard .statistics .dollar-icon {
+    background-color: oklch(.95 .052 163.051);
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .dashboard .search {
