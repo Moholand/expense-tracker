@@ -39,23 +39,23 @@
         <input type="date" wire:model="startDate" />
         <input type="date" wire:model="endDate" />
     </div>
-    <table>
+    <table class="expense-list">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Category</th>
-                <th>Amount</th>
                 <th>Description</th>
+                <th>Amount</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @foreach($expenses as $expense)
                 <tr>
-                    <td>{{ $expense->date }}</td>
+                    <td>{{ $expense->date->format('M d, Y') }}</td>
                     <td>{{ $expense->category->name }}</td>
-                    <td>${{ $expense->amount }}</td>
                     <td>{{ $expense->description }}</td>
+                    <td>${{ $expense->amount }}</td>
                     <td>
                         <button wire:click="editExpense({{ $expense->id }})">Edit</button>
                         <button wire:click="deleteExpense({{ $expense->id }})">Delete</button>

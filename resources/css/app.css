@@ -112,3 +112,33 @@ main {
 .dashboard .search {
     padding: 20px 0;
 }
+
+.expense-list {
+    background-color: #ffffff;
+    border-radius: 20px;
+    width: 100%;
+    margin-top: 20px;
+    margin-right: 20px;
+}
+
+.expense-list thead {
+    background-color: oklch(.985 .002 247.839);
+}
+
+.expense-list tr {
+    border-bottom: 1px solid #ececec;
+}
+
+.expense-list td, .expense-list th {
+    padding: 15px 20px;
+    text-align: left;
+}
+
+.expense-list th {
+    font-size: 18px;
+}
+
+.expense-list td {
+    font-size: 16px;
+    color: oklch(.446 .03 256.802);
+}
