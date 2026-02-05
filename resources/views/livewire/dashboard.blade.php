@@ -51,9 +51,16 @@
         </thead>
         <tbody>
             @foreach($expenses as $expense)
+                @php
+                    $styles = $this->getCategoryStyles($expense->category_id);
+                @endphp
                 <tr>
                     <td>{{ $expense->date->format('M d, Y') }}</td>
-                    <td>{{ $expense->category->name }}</td>
+                    <td class="category-badge">
+                        <span style="background-color: {{ $styles['bg'] }}; color: {{ $styles['color'] }}">
+                            {{ $expense->category->name }}
+                        </span>
+                    </td>
                     <td>{{ $expense->description }}</td>
                     <td>${{ $expense->amount }}</td>
                     <td>
