@@ -39,7 +39,7 @@
         <input type="date" wire:model="startDate" />
         <input type="date" wire:model="endDate" />
     </div>
-    <table class="expense-list">
+    <table class="expense-list" wire:loading.class="table-loading">
         <thead>
             <tr>
                 <th>Date</th>
@@ -54,7 +54,7 @@
                 @php
                     $styles = $this->getCategoryStyles($expense->category_id);
                 @endphp
-                <tr>
+                <tr wire:key="expense-{{ $expense->id }}">
                     <td>{{ $expense->date->format('M d, Y') }}</td>
                     <td class="category-badge">
                         <span style="background-color: {{ $styles['bg'] }}; color: {{ $styles['color'] }}">
@@ -70,5 +70,50 @@
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan='5'>
+                    <div class='table-footer'>
+                        <div class='footer-left'>
+                            Showing
+                            {{ $expenses->firstItem() }}
+                            to
+                            {{ $expenses->lastItem() }}
+                            of
+                            {{ $expenses->total() }}
+                            expenses
+                        </div>
+
+                        <div class="footer-right">
+                            <button 
+                                wire:click="previousPage"
+                                wire:loading.attr="disabled"
+                                wire:target="previousPage,nextPage"
+                                @disabled($expenses->onFirstPage())
+                            >
+                                ‹
+                            </button>
+
+                            <span wire:loading.remove wire:target="previousPage,nextPage">
+                                Page {{ $expenses->currentPage() }} of {{ $expenses->lastPage() }}
+                            </span>
+
+                            <span wire:loading wire:target="previousPage,nextPage">
+                                Loading...
+                            </span>
+
+                            <button 
+                                wire:click="nextPage"
+                                wire:loading.attr="disabled"
+                                wire:target="previousPage,nextPage"
+                                @disabled(!$expenses->hasMorePages())
+                            >
+                                ›
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>

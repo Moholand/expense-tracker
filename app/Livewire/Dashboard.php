@@ -5,10 +5,16 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Expense;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Dashboard extends Component
 {
+    use WithPagination;
+
+    const PAGINATE = 10;
+
     public string $search = '';
     public string $categoryFilter = '';
     public string $startDate = '';
@@ -44,7 +50,7 @@ class Dashboard extends Component
         return $colors[$index];
     }
 
-    private function getFilteredExpenses($userId): Collection
+    private function getFilteredExpenses(int $userId): LengthAwarePaginator
     {
         return Expense::query()
             ->where('user_id', $userId)
@@ -61,10 +67,10 @@ class Dashboard extends Component
                 $query->whereDate('date', '<=', $this->endDate)
             )
             ->latest()
-            ->get();
+            ->paginate(self::PAGINATE);
     }
 
-    private function getTotalUserExpenses($userId): int
+    private function getTotalUserExpenses(int $userId): int
     {
         return Expense::where('user_id', $userId)->sum('amount');
     }
