@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Categories;
 use App\Livewire\Dashboard;
+use App\Livewire\Expenses\CreateExpense;
 use App\Livewire\Reports;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,11 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/dashboard', Dashboard::class)->name('dashboard');
-Route::get('/categories', Categories::class)->name('categories');
-Route::get('/reports', Reports::class)->name('reports');
+Route::get('dashboard', Dashboard::class)->name('dashboard');
+Route::get('categories', Categories::class)->name('categories');
+Route::get('categories/create', function () {})->name('categories.create');
+Route::get('reports', Reports::class)->name('reports');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('expenses/create', CreateExpense::class)->name('expenses.create');
+});
