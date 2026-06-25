@@ -40,14 +40,10 @@ COPY . .
 RUN npm run build
 
 FROM base AS final
-
 COPY --from=base /var/www /var/www
 COPY --from=node-build /var/www/public/build /var/www/public/build
 
-RUN composer install --no-interaction --optimize-autoloader --no-dev \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+RUN composer install --no-interaction --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
