@@ -1,4 +1,4 @@
-FROM php:8.2-fpm AS base
+FROM php:8.2-fpm
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -29,23 +29,10 @@ WORKDIR /var/www
 
 COPY . .
 
-FROM node:20 AS node-build
-
-WORKDIR /var/www
-
-COPY package.json package-lock.json ./
-RUN npm ci
-
-COPY . .
-RUN npm run build
-
-FROM base AS final
-COPY --from=base /var/www /var/www
-COPY --from=node-build /var/www/public/build /var/www/public/build
-
-RUN composer install --no-interaction --optimize-autoloader
+RUN composer install --no-interaction
 
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 9000
+
 CMD ["php-fpm"]
