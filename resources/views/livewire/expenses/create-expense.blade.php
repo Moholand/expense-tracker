@@ -7,9 +7,7 @@
         {{-- Date --}}
         <div>
             <label class="block text-sm font-medium mb-1">Date</label>
-            <input type="date"
-                   wire:model.defer="date"
-                   class="w-full rounded border-gray-300">
+            <input type="date" wire:model="date" class="w-full rounded border-gray-300">
             @error('date') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -17,8 +15,7 @@
         <div>
             <label class="block text-sm font-medium mb-1">Category</label>
             <div class="flex gap-2">
-                <select wire:model.defer="category_id"
-                        class="w-full rounded border-gray-300">
+                <select wire:model="category_id" class="w-full rounded border-gray-300">
                     <option value="">Select a category</option>
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}">
@@ -38,11 +35,7 @@
         {{-- Amount --}}
         <div>
             <label class="block text-sm font-medium mb-1">Amount</label>
-            <input type="number"
-                   step="0.01"
-                   wire:model.defer="amount"
-                   class="w-full rounded border-gray-300"
-                   placeholder="0.00">
+            <input type="number" wire:model="amount" class="w-full rounded border-gray-300" placeholder="0">
             @error('amount') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
@@ -51,22 +44,18 @@
             <label class="block text-sm font-medium mb-1">
                 Description <span class="text-gray-400">(optional)</span>
             </label>
-            <textarea wire:model.defer="description"
-                      rows="4"
-                      class="w-full rounded border-gray-300"
-                      placeholder="Add notes or details..."></textarea>
+            <textarea wire:model="description" rows="4" class="w-full rounded border-gray-300" placeholder="Add notes or details...">
+            </textarea>
             @error('description') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>
 
         {{-- Actions --}}
         <div class="flex gap-3">
-            <button type="submit"
-                    class="px-6 py-2 bg-indigo-600 text-white rounded">
+            <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded">
                 Save Expense
             </button>
 
-            <a href="{{ route('dashboard') }}"
-               class="px-6 py-2 bg-gray-100 rounded">
+            <a href="{{ route('dashboard') }}" class="px-6 py-2 bg-gray-100 rounded">
                 Cancel
             </a>
         </div>
