@@ -50,7 +50,7 @@ main {
     padding-left: 10px;
 }
 
-.dashboard {
+.dashboard, .create-expense {
     padding: 35px;
 }
 
