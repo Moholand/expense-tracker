@@ -28,16 +28,30 @@
             </div>
         </div>
     </div>
-    <div class="search">
-        <input type="text" wire:model="search" placeholder="Search expenses..." />
-        <select wire:model="categoryFilter">
-            <option value="">All Categories</option>
-            @foreach($categories as $category)
-                <option value="{{ $category->id }}">{{ $category->name }}</option>
-            @endforeach
-        </select>
-        <input type="date" wire:model="startDate" />
-        <input type="date" wire:model="endDate" />
+    <div class="filter-card">
+        <div class="filter-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+            <span>Filters</span>
+        </div>
+        <div class="filter-inputs">
+            <div class="filter-input-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="filter-input-icon">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </svg>
+                <input type="text" wire:model.live.debounce.1s="search" placeholder="Search description..." class="filter-input" />
+            </div>
+            <select wire:model.live="categoryFilter" class="filter-select">
+                <option value="">All Categories</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+            <input type="date" wire:model.live="startDate" class="filter-date" placeholder="mm/dd/yyyy" />
+            <input type="date" wire:model.live="endDate" class="filter-date" placeholder="mm/dd/yyyy" />
+        </div>
     </div>
     <table class="expense-list" wire:loading.class="table-loading">
         <thead>
