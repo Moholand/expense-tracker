@@ -69,10 +69,12 @@ main {
 .dashboard .statistics {
     padding-top: 20px;
     display: flex;
+    width: 100%;
+    gap: 20px;
 }
 
 .dashboard .statistics .box {
-    width: 50%;
+    flex: 1;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 20px;
@@ -81,7 +83,6 @@ main {
 
 .dashboard .statistics .total,
 .dashboard .statistics .transactions {
-    margin-right: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -216,7 +217,6 @@ main {
     border-radius: 20px;
     width: 100%;
     margin-top: 20px;
-    margin-right: 20px;
 }
 
 .expense-list thead {
