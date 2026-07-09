@@ -50,7 +50,7 @@ main {
     padding-left: 10px;
 }
 
-.dashboard, .create-expense {
+.dashboard, .create-expense, .categories {
     padding: 35px;
 }
 
@@ -310,4 +310,39 @@ main {
 
 .delete-expense {
     color: oklch(.577 .245 27.325);
+}
+
+.categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+.categories .title {
+    color: oklch(.21 .034 264.665);
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.categories .description {
+    color: oklch(.446 .03 256.802);
+    font-size: 16px;
+}
+
+.add-category-btn {
+    background-color: oklch(.511 .262 276.966);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.add-category-btn:hover {
+    opacity: 0.9;
 }
