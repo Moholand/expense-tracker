@@ -13,6 +13,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name', 30);
             $table->string('description');
+            $table->string('color', 20)->default('gray');
         });
     }
 
