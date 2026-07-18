@@ -127,6 +127,12 @@ class Dashboard extends Component
         session()->flash('success', 'Expense updated successfully.');
     }
 
+    public function deleteExpense(int $id): void
+    {
+        Expense::where('user_id', auth()->id())->findOrFail($id)->delete();
+        session()->flash('success', 'Expense deleted successfully.');
+    }
+
     public function closeModal(): void
     {
         $this->showModal = false;
