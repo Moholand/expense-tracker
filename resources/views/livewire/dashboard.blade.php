@@ -1,6 +1,12 @@
 <div class="dashboard">
     <h1 class="title">All Expenses</h1>
     <div class="description">Track and manage your spending</div>
+
+    @if (session()->has('success'))
+        <div class="alert-success" x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="statistics">
         <div class="total box">
             <div class="total-expenses">
@@ -140,4 +146,51 @@
             </tr>
         </tfoot>
     </table>
+
+    @if($showModal)
+        <div class="modal-overlay" wire:click="closeModal">
+            <div class="modal-content" wire:click.stop>
+                <div class="modal-header">
+                    <h2>Edit Expense</h2>
+                    <button class="modal-close" wire:click="closeModal">&times;</button>
+                </div>
+                <form wire:submit.prevent="updateExpense">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-date">Date</label>
+                            <input type="date" id="edit-date" wire:model="date" class="form-input">
+                            @error('date') <span class="form-error">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-category">Category</label>
+                            <select id="edit-category" wire:model="category_id" class="form-input">
+                                <option value="">Select a category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_id') <span class="form-error">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-amount">Amount (Toman)</label>
+                            <input type="number" id="edit-amount" wire:model="amount" class="form-input" placeholder="0">
+                            @error('amount') <span class="form-error">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-description">Description</label>
+                            <textarea id="edit-description" wire:model="description" rows="3" class="form-input" placeholder="Add notes or details..."></textarea>
+                            @error('description') <span class="form-error">{{ $message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" wire:click="closeModal">Cancel</button>
+                        <button type="submit" class="btn-submit">Update Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
 </div>

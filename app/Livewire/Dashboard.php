@@ -20,6 +20,13 @@ class Dashboard extends Component
     public string $startDate = '';
     public string $endDate = '';
 
+    public bool $showModal = false;
+    public ?int $editingExpenseId = null;
+    public string $date = '';
+    public int $category_id = 0;
+    public int $amount = 0;
+    public string $description = '';
+
     private array $colors = [
         1 => ['bg' => 'oklch(0.954 0.038 75.164)',  'color' => 'oklch(.553 .195 38.402)'],
         2 => ['bg' => 'oklch(0.932 0.032 255.585)', 'color' => 'oklch(.488 .243 264.376)'],
@@ -73,6 +80,67 @@ class Dashboard extends Component
     private function getTotalUserExpenses(int $userId): int
     {
         return Expense::where('user_id', $userId)->sum('amount');
+    }
+
+    public function rules(): array
+    {
+        return [
+            'date'        => ['required', 'date'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'amount'      => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ];
+    }
+
+    public function validationAttributes(): array
+    {
+        return [
+            'date'        => 'date',
+            'category_id' => 'category',
+            'amount'      => 'amount',
+            'description' => 'description',
+        ];
+    }
+
+    public function editExpense(int $id): void
+    {
+        $expense = Expense::where('user_id', auth()->id())->findOrFail($id);
+
+        $this->editingExpenseId = $expense->id;
+        $this->date = $expense->date->format('Y-m-d');
+        $this->category_id = $expense->category_id;
+        $this->amount = $expense->amount;
+        $this->description = $expense->description ?? '';
+        $this->showModal = true;
+    }
+
+    public function updateExpense(): void
+    {
+        $validated = $this->validate();
+
+        Expense::query()
+            ->where('user_id', auth()->id())
+            ->findOrFail($this->editingExpenseId)
+            ->update($validated);
+
+        $this->closeModal();
+        session()->flash('success', 'Expense updated successfully.');
+    }
+
+    public function closeModal(): void
+    {
+        $this->showModal = false;
+        $this->resetForm();
+    }
+
+    public function resetForm(): void
+    {
+        $this->editingExpenseId = null;
+        $this->date = '';
+        $this->category_id = 0;
+        $this->amount = 0;
+        $this->description = '';
+        $this->resetValidation();
     }
 
     private function getAllCategories(): Collection
