@@ -14,6 +14,17 @@ class Reports extends Component
     public string $startDate = '';
     public string $endDate = '';
     public array $selectedCategories = [];
+    public string $chartType = 'pie';
+
+    private const CHART_COLORS = [
+        'orange' => '#F97316',
+        'blue'   => '#3B82F6',
+        'purple' => '#8B5CF6',
+        'pink'   => '#EC4899',
+        'yellow' => '#EAB308',
+        'green'  => '#22C55E',
+        'gray'   => '#6B7280',
+    ];
 
     public function boot(): void
     {
@@ -34,6 +45,8 @@ class Reports extends Component
             'totalExpenses'     => $this->getTotalExpenses($userId),
             'transactionCount'  => $this->getTransactionCount($userId),
             'averageWeekly'     => $this->getAverageWeekly($userId),
+            'categoryBreakdown' => $this->getCategoryBreakdown(),
+            'chartType'         => $this->chartType,
         ])->layout('layouts.app');
     }
 
@@ -49,6 +62,11 @@ class Reports extends Component
         } else {
             $this->selectedCategories[] = $categoryId;
         }
+    }
+
+    public function switchChartType(string $type): void
+    {
+        $this->chartType = $type === 'bar' ? 'bar' : 'pie';
     }
 
     private function getBaseQuery(int $userId)
@@ -85,5 +103,28 @@ class Reports extends Component
     private function getCategories(): Collection
     {
         return Category::all();
+    }
+
+    private function getCategoryBreakdown(): array
+    {
+        $userId = auth()->id();
+
+        $breakdown = $this->getBaseQuery($userId)
+            ->join('categories', 'expenses.category_id', '=', 'categories.id')
+            ->select('categories.name', 'categories.color')
+            ->selectRaw('SUM(amount) as total')
+            ->groupBy('categories.id', 'categories.name', 'categories.color')
+            ->orderByDesc('total')
+            ->get();
+
+        $grandTotal = (float) $breakdown->sum('total');
+
+        return $breakdown->map(fn ($row) => [
+            'name'       => $row->name,
+            'amount'     => (float) $row->total,
+            'percentage' => $grandTotal > 0 ? round(($row->total / $grandTotal) * 100, 1) : 0,
+            'color'      => $row->color,
+            'hex'        => self::CHART_COLORS[$row->color] ?? self::CHART_COLORS['gray'],
+        ])->toArray();
     }
 }
