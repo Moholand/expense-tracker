@@ -829,6 +829,20 @@ main {
     color: #374151;
 }
 
+.reports-bar-chart {
+    width: 100%;
+    max-width: 850px;
+}
+
+.reports-bar-chart svg text {
+    font-size: 12px;
+    fill: #6b7280;
+}
+
+.reports-bar-chart svg rect {
+    transition: height 0.6s ease, y 0.6s ease;
+}
+
 .reports-breakdown-table {
     width: 100%;
     border-collapse: collapse;
