@@ -265,4 +265,137 @@
             </tbody>
         </table>
     </div>
+
+    <div class="reports-spending-over-time">
+        <div class="reports-breakdown-header">
+            <h2 class="reports-breakdown-title">Spending Over Time</h2>
+            <div class="reports-chart-toggle-group">
+                <button
+                    wire:click="switchTimePeriod('weekly')"
+                    class="reports-chart-toggle {{ $timePeriod === 'weekly' ? 'active' : '' }}"
+                >Weekly</button>
+                <button
+                    wire:click="switchTimePeriod('monthly')"
+                    class="reports-chart-toggle {{ $timePeriod === 'monthly' ? 'active' : '' }}"
+                >Monthly</button>
+            </div>
+        </div>
+
+        @php
+            $chartWidth = 750;
+            $chartHeight = 350;
+            $padTop = 20;
+            $padRight = 20;
+            $padBottom = 60;
+            $padLeft = 80;
+
+            $maxAmount = !empty($weeklySpending) ? max(array_column($weeklySpending, 'total')) : 0;
+            $niceMax = max(1, ceil($maxAmount / 75) * 75);
+            $plotHeight = $chartHeight - $padTop - $padBottom;
+            $plotWidth = $chartWidth - $padLeft - $padRight;
+
+            $weekCount = count($weeklySpending);
+            $pointSpacing = $weekCount > 1 ? $plotWidth / ($weekCount - 1) : $plotWidth;
+
+            $yTicks = [0, $niceMax * 0.25, $niceMax * 0.5, $niceMax * 0.75, $niceMax];
+
+            $points = [];
+            foreach ($weeklySpending as $index => $week) {
+                $x = $padLeft + ($index * $pointSpacing);
+                $y = $padTop + $plotHeight - ($week['total'] / $niceMax) * $plotHeight;
+                $points[] = ['x' => $x, 'y' => $y, 'total' => $week['total']];
+            }
+
+            $pathD = '';
+            if (count($points) > 1) {
+                $pathD = 'M ' . $points[0]['x'] . ' ' . $points[0]['y'];
+                for ($i = 0; $i < count($points) - 1; $i++) {
+                    $cp1x = $points[$i]['x'] + $pointSpacing * 0.4;
+                    $cp1y = $points[$i]['y'];
+                    $cp2x = $points[$i + 1]['x'] - $pointSpacing * 0.4;
+                    $cp2y = $points[$i + 1]['y'];
+                    $pathD .= ' C ' . $cp1x . ' ' . $cp1y . ', ' . $cp2x . ' ' . $cp2y . ', ' . $points[$i + 1]['x'] . ' ' . $points[$i + 1]['y'];
+                }
+            }
+        @endphp
+
+        <div class="reports-chart-wrapper">
+            <div class="reports-line-chart">
+                <svg viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}" width="100%" preserveAspectRatio="xMidYMid meet">
+                    @foreach($yTicks as $tick)
+                        @php
+                            $y = $padTop + $plotHeight - ($tick / $niceMax) * $plotHeight;
+                        @endphp
+                        <line
+                            x1="{{ $padLeft }}" y1="{{ $y }}"
+                            x2="{{ $chartWidth - $padRight }}" y2="{{ $y }}"
+                            stroke="#e5e7eb" stroke-dasharray="4,4"
+                        />
+                        <text
+                            x="{{ $padLeft - 10 }}" y="{{ $y + 4 }}"
+                            text-anchor="end"
+                        >${{ number_format($tick, 0) }}</text>
+                    @endforeach
+
+                    <line
+                        x1="{{ $padLeft }}" y1="{{ $padTop + $plotHeight }}"
+                        x2="{{ $chartWidth - $padRight }}" y2="{{ $padTop + $plotHeight }}"
+                        stroke="#e5e7eb" stroke-width="1"
+                    />
+
+                    @foreach($weeklySpending as $index => $week)
+                        @php
+                            $x = $padLeft + ($index * $pointSpacing);
+                            $y = $padTop + $plotHeight + 20;
+                        @endphp
+                        <text
+                            x="{{ $x }}" y="{{ $y }}"
+                            text-anchor="middle"
+                        >Week {{ $index + 1 }}</text>
+                    @endforeach
+
+                    @if(!empty($pathD))
+                        <path
+                            d="{{ $pathD }}"
+                            fill="none"
+                            stroke="#8B5CF6"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        />
+                    @endif
+
+                    @foreach($points as $point)
+                        <circle
+                            cx="{{ $point['x'] }}"
+                            cy="{{ $point['y'] }}"
+                            r="5"
+                            fill="#8B5CF6"
+                            stroke="#ffffff"
+                            stroke-width="2"
+                        />
+                    @endforeach
+                </svg>
+            </div>
+        </div>
+
+        <table class="reports-breakdown-table">
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th style="text-align: right;">Transactions</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($weeklySpending as $week)
+                    <tr>
+                        <td>{{ $week['week'] }}</td>
+                        <td style="text-align: right;">{{ $week['transactions'] }}</td>
+                        <td style="text-align: right;">${{ number_format($week['total'], 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>

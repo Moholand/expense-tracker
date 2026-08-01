@@ -15,6 +15,7 @@ class Reports extends Component
     public string $endDate = '';
     public array $selectedCategories = [];
     public string $chartType = 'pie';
+    public string $timePeriod = 'weekly';
 
     private const CHART_COLORS = [
         'orange' => '#F97316',
@@ -47,6 +48,8 @@ class Reports extends Component
             'averageWeekly'     => $this->getAverageWeekly($userId),
             'categoryBreakdown' => $this->getCategoryBreakdown(),
             'chartType'         => $this->chartType,
+            'weeklySpending'    => $this->getWeeklySpending(),
+            'timePeriod'        => $this->timePeriod,
         ])->layout('layouts.app');
     }
 
@@ -67,6 +70,11 @@ class Reports extends Component
     public function switchChartType(string $type): void
     {
         $this->chartType = $type === 'bar' ? 'bar' : 'pie';
+    }
+
+    public function switchTimePeriod(string $period): void
+    {
+        $this->timePeriod = $period === 'monthly' ? 'monthly' : 'weekly';
     }
 
     private function getBaseQuery(int $userId)
@@ -103,6 +111,37 @@ class Reports extends Component
     private function getCategories(): Collection
     {
         return Category::all();
+    }
+
+    private function getWeeklySpending(): array
+    {
+        $userId = auth()->id();
+        $start = Carbon::parse($this->startDate);
+        $end = Carbon::parse($this->endDate);
+
+        $expenses = $this->getBaseQuery($userId)->get();
+
+        $weeks = [];
+        $current = $start->copy()->startOfWeek();
+
+        while ($current->lte($end)) {
+            $weekEnd = $current->copy()->endOfWeek();
+            $weekLabel = $current->format('M j') . '-' . $weekEnd->format('j');
+
+            $weekExpenses = $expenses->filter(fn ($e) =>
+                Carbon::parse($e->date)->between($current, $weekEnd)
+            );
+
+            $weeks[] = [
+                'week' => $weekLabel,
+                'transactions' => $weekExpenses->count(),
+                'total' => (float) $weekExpenses->sum('amount'),
+            ];
+
+            $current->addWeek();
+        }
+
+        return $weeks;
     }
 
     private function getCategoryBreakdown(): array
