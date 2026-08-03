@@ -282,6 +282,7 @@
         </div>
 
         @php
+            $spendingData = $timePeriod === 'monthly' ? $monthlySpending : $weeklySpending;
             $chartWidth = 750;
             $chartHeight = 350;
             $padTop = 20;
@@ -289,21 +290,21 @@
             $padBottom = 60;
             $padLeft = 80;
 
-            $maxAmount = !empty($weeklySpending) ? max(array_column($weeklySpending, 'total')) : 0;
+            $maxAmount = !empty($spendingData) ? max(array_column($spendingData, 'total')) : 0;
             $niceMax = max(1, ceil($maxAmount / 75) * 75);
             $plotHeight = $chartHeight - $padTop - $padBottom;
             $plotWidth = $chartWidth - $padLeft - $padRight;
 
-            $weekCount = count($weeklySpending);
-            $pointSpacing = $weekCount > 1 ? $plotWidth / ($weekCount - 1) : $plotWidth;
+            $dataCount = count($spendingData);
+            $pointSpacing = $dataCount > 1 ? $plotWidth / ($dataCount - 1) : $plotWidth;
 
             $yTicks = [0, $niceMax * 0.25, $niceMax * 0.5, $niceMax * 0.75, $niceMax];
 
             $points = [];
-            foreach ($weeklySpending as $index => $week) {
+            foreach ($spendingData as $index => $item) {
                 $x = $padLeft + ($index * $pointSpacing);
-                $y = $padTop + $plotHeight - ($week['total'] / $niceMax) * $plotHeight;
-                $points[] = ['x' => $x, 'y' => $y, 'total' => $week['total']];
+                $y = $padTop + $plotHeight - ($item['total'] / $niceMax) * $plotHeight;
+                $points[] = ['x' => $x, 'y' => $y, 'total' => $item['total']];
             }
 
             $pathD = '';
@@ -343,15 +344,16 @@
                         stroke="#e5e7eb" stroke-width="1"
                     />
 
-                    @foreach($weeklySpending as $index => $week)
+                    @foreach($spendingData as $index => $item)
                         @php
                             $x = $padLeft + ($index * $pointSpacing);
                             $y = $padTop + $plotHeight + 20;
+                            $label = $timePeriod === 'monthly' ? \Carbon\Carbon::parse('1 ' . $item['month'])->format('M') : 'Week ' . ($index + 1);
                         @endphp
                         <text
                             x="{{ $x }}" y="{{ $y }}"
                             text-anchor="middle"
-                        >Week {{ $index + 1 }}</text>
+                        >{{ $label }}</text>
                     @endforeach
 
                     @if(!empty($pathD))
@@ -382,17 +384,17 @@
         <table class="reports-breakdown-table">
             <thead>
                 <tr>
-                    <th>Week</th>
+                    <th>{{ $timePeriod === 'monthly' ? 'Month' : 'Week' }}</th>
                     <th style="text-align: right;">Transactions</th>
                     <th style="text-align: right;">Total</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($weeklySpending as $week)
+                @foreach($spendingData as $item)
                     <tr>
-                        <td>{{ $week['week'] }}</td>
-                        <td style="text-align: right;">{{ $week['transactions'] }}</td>
-                        <td style="text-align: right;">${{ number_format($week['total'], 2) }}</td>
+                        <td>{{ $timePeriod === 'monthly' ? $item['month'] : $item['week'] }}</td>
+                        <td style="text-align: right;">{{ $item['transactions'] }}</td>
+                        <td style="text-align: right;">${{ number_format($item['total'], 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>

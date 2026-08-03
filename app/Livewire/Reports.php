@@ -49,6 +49,7 @@ class Reports extends Component
             'categoryBreakdown' => $this->getCategoryBreakdown(),
             'chartType'         => $this->chartType,
             'weeklySpending'    => $this->getWeeklySpending(),
+            'monthlySpending'   => $this->getMonthlySpending(),
             'timePeriod'        => $this->timePeriod,
         ])->layout('layouts.app');
     }
@@ -142,6 +143,37 @@ class Reports extends Component
         }
 
         return $weeks;
+    }
+
+    private function getMonthlySpending(): array
+    {
+        $userId = auth()->id();
+        $start = Carbon::parse($this->startDate)->startOfMonth();
+        $end = Carbon::parse($this->endDate)->endOfMonth();
+
+        $expenses = $this->getBaseQuery($userId)->get();
+
+        $months = [];
+        $current = $start->copy();
+
+        while ($current->lte($end)) {
+            $monthEnd = $current->copy()->endOfMonth();
+            $monthLabel = $current->format('F Y');
+
+            $monthExpenses = $expenses->filter(fn ($e) =>
+                Carbon::parse($e->date)->between($current, $monthEnd)
+            );
+
+            $months[] = [
+                'month' => $monthLabel,
+                'transactions' => $monthExpenses->count(),
+                'total' => (float) $monthExpenses->sum('amount'),
+            ];
+
+            $current->addMonth();
+        }
+
+        return $months;
     }
 
     private function getCategoryBreakdown(): array
