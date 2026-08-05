@@ -25,10 +25,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,11 +33,11 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('dashboard', Dashboard::class)->name('dashboard');
-Route::get('categories', Categories::class)->name('categories');
-Route::get('categories/create', function () {})->name('categories.create');
-Route::get('reports', Reports::class)->name('reports');
-
 Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', Dashboard::class)->name('dashboard');
+    Route::get('categories', Categories::class)->name('categories');
+    Route::get('categories/create', function () {})->name('categories.create');
+    Route::get('reports', Reports::class)->name('reports');
+
     Route::get('expenses/create', CreateExpense::class)->name('expenses.create');
 });

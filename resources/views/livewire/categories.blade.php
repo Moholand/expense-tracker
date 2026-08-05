@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{ $category->name }}</td>
                     <td>
-                        <span class="color-badge" style="background-color: {{ $styles['bg'] }}; color: {{ $styles['text'] }};">
+                        <span class="color-badge" style="background-color: {{ $styles['bg'] }}; color: {{ $styles['color'] }};">
                             {{ $category->color }}
                         </span>
                     </td>
@@ -82,10 +82,10 @@
                                     @php $styles = $this->getColorStyles($colorOption); @endphp
                                     <label class="color-option {{ $color === $colorOption ? 'selected' : '' }}">
                                         <input type="radio" wire:model="color" value="{{ $colorOption }}" class="sr-only">
-                                        <span class="color-swatch" style="background-color: {{ $styles['bg'] }}; border-color: {{ $styles['text'] }};">
-                                            <span class="color-dot" style="background-color: {{ $styles['text'] }};"></span>
+                                        <span class="color-swatch" style="background-color: {{ $styles['bg'] }}; border-color: {{ $styles['color'] }};">
+                                            <span class="color-dot" style="background-color: {{ $styles['color'] }};"></span>
                                         </span>
-                                        <span class="color-label" style="color: {{ $styles['text'] }};">{{ $colorOption }}</span>
+                                        <span class="color-label" style="color: {{ $styles['color'] }};">{{ $colorOption }}</span>
                                     </label>
                                 @endforeach
                             </div>

@@ -18,15 +18,12 @@ class Categories extends Component
 
     public string $color = 'gray';
 
-    public array $colors = [
-        'orange',
-        'blue',
-        'purple',
-        'pink',
-        'yellow',
-        'green',
-        'gray',
-    ];
+    public array $colors;
+
+    public function boot(): void
+    {
+        $this->colors = config('categories.colors');
+    }
 
     public function render()
     {
@@ -113,17 +110,9 @@ class Categories extends Component
 
     public function getColorStyles(string $color): array
     {
-        $map = [
-            'orange' => ['bg' => '#fff3e0', 'text' => '#e65100'],
-            'blue'   => ['bg' => '#e3f2fd', 'text' => '#1565c0'],
-            'purple' => ['bg' => '#f3e5f5', 'text' => '#7b1fa2'],
-            'pink'   => ['bg' => '#fce4ec', 'text' => '#c62828'],
-            'yellow' => ['bg' => '#fffde7', 'text' => '#f9a825'],
-            'green'  => ['bg' => '#e8f5e9', 'text' => '#2e7d32'],
-            'gray'   => ['bg' => '#f5f5f5', 'text' => '#616161'],
-        ];
+        $styles = config('categories.color_styles');
 
-        return $map[$color] ?? $map['gray'];
+        return $styles[$color] ?? $styles['gray'];
     }
 
     private function getCategories(): Collection

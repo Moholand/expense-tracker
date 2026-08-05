@@ -164,13 +164,13 @@
 
                         <div class="form-group">
                             <label for="edit-category">Category</label>
-                            <select id="edit-category" wire:model="category_id" class="form-input">
+                            <select id="edit-category" wire:model="categoryId" class="form-input">
                                 <option value="">Select a category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                            @error('category_id') <span class="form-error">{{ $message }}</span> @enderror
+                            @error('categoryId') <span class="form-error">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="form-group">
