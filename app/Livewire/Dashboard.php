@@ -4,8 +4,10 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Expense;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -27,17 +29,22 @@ class Dashboard extends Component
     public int $amount = 0;
     public string $description = '';
 
-    public function render()
+    #[Layout('layouts.app')]
+    public function render(): View
     {
         $userId = auth()->id();
 
-        return view('livewire.dashboard', [
-            'total'      => $this->getTotalUserExpenses($userId),
-            'expenses'   => $this->getFilteredExpenses($userId),
-            'categories' => $this->getAllCategories(),
-        ])->layout('layouts.app', ['header' => 'Dashboard']);
-    }
+        $query = $this->getFilteredQuery($userId);
 
+        $data = [
+            'total'      => (clone $query)->sum('amount'),
+            'expenses'   => $query->latest()->paginate(self::PAGINATE),
+            'categories' => $this->getAllCategories(),
+        ];
+
+        return view('livewire.dashboard', $data);
+    }
+    
     public function getCategoryStyles(int $categoryId): array
     {
         $category = Category::find($categoryId);
@@ -47,7 +54,7 @@ class Dashboard extends Component
         return $styles[$color] ?? $styles['gray'];
     }
 
-    private function getFilteredExpenses(int $userId): LengthAwarePaginator
+    private function getFilteredQuery(int $userId): Builder
     {
         return Expense::query()
             ->where('user_id', $userId)
@@ -62,14 +69,7 @@ class Dashboard extends Component
             )
             ->when($this->endDate, fn ($query) =>
                 $query->whereDate('date', '<=', $this->endDate)
-            )
-            ->latest()
-            ->paginate(self::PAGINATE);
-    }
-
-    private function getTotalUserExpenses(int $userId): int
-    {
-        return Expense::where('user_id', $userId)->sum('amount');
+            );
     }
 
     public function rules(): array
