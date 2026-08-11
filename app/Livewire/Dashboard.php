@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Expense;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -18,7 +19,7 @@ class Dashboard extends Component
     const PAGINATE = 10;
 
     public string $search = '';
-    public string $categoryFilter = '';
+    public ?int $categoryFilter = null;
     public string $startDate = '';
     public string $endDate = '';
 
@@ -38,20 +39,11 @@ class Dashboard extends Component
 
         $data = [
             'total'      => (clone $query)->sum('amount'),
-            'expenses'   => $query->latest()->paginate(self::PAGINATE),
+            'expenses'   => $this->getExpenses($query),
             'categories' => $this->getAllCategories(),
         ];
 
         return view('livewire.dashboard', $data);
-    }
-    
-    public function getCategoryStyles(int $categoryId): array
-    {
-        $category = Category::find($categoryId);
-        $color = $category->color ?? 'gray';
-        $styles = config('categories.color_styles');
-
-        return $styles[$color] ?? $styles['gray'];
     }
 
     private function getFilteredQuery(int $userId): Builder
@@ -70,6 +62,24 @@ class Dashboard extends Component
             ->when($this->endDate, fn ($query) =>
                 $query->whereDate('date', '<=', $this->endDate)
             );
+    }
+
+    private function getExpenses(Builder $query): LengthAwarePaginator
+    {
+        $expenses = $query->with('category')->latest()->paginate(self::PAGINATE);
+
+        foreach ($expenses as $expense) {
+            $expense->setAttribute('styles', $this->getCategoryStyles($expense->category->color));
+        }
+
+        return $expenses;
+    }
+
+    public function getCategoryStyles(string $color): array
+    {
+        $styles = config('categories.color_styles');
+
+        return $styles[$color] ?? $styles['gray'];
     }
 
     public function rules(): array

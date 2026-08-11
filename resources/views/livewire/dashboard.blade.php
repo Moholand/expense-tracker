@@ -71,13 +71,10 @@
         </thead>
         <tbody>
             @foreach($expenses as $expense)
-                @php
-                    $styles = $this->getCategoryStyles($expense->category_id);
-                @endphp
                 <tr wire:key="expense-{{ $expense->id }}">
                     <td>{{ $expense->date->format('M d, Y') }}</td>
                     <td class="category-badge">
-                        <span style="background-color: {{ $styles['bg'] }}; color: {{ $styles['color'] }}">
+                        <span style="background-color: {{ $expense->styles['bg'] }}; color: {{ $expense->styles['color'] }}">
                             {{ $expense->category->name }}
                         </span>
                     </td>

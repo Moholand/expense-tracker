@@ -251,6 +251,7 @@ main {
     border-radius: 20px;
     width: 100%;
     margin-top: 20px;
+    overflow: hidden;
 }
 
 .expense-list thead {
