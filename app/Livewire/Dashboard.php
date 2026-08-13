@@ -26,7 +26,7 @@ class Dashboard extends Component
     public bool $showModal = false;
     public ?int $editingExpenseId = null;
     public string $date = '';
-    public int $categoryId = 0;
+    public int $category_id = 0;
     public int $amount = 0;
     public string $description = '';
 
@@ -108,7 +108,7 @@ class Dashboard extends Component
 
         $this->editingExpenseId = $expense->id;
         $this->date = $expense->date->format('Y-m-d');
-        $this->categoryId = $expense->category_id;
+        $this->category_id = $expense->category_id;
         $this->amount = $expense->amount;
         $this->description = $expense->description ?? '';
         $this->showModal = true;
@@ -143,7 +143,7 @@ class Dashboard extends Component
     {
         $this->editingExpenseId = null;
         $this->date = '';
-        $this->categoryId = 0;
+        $this->category_id = 0;
         $this->amount = 0;
         $this->description = '';
         $this->resetValidation();

@@ -26,6 +26,10 @@ main {
     flex-direction: column;
 }
 
+.sidebar form {
+    margin-top: auto;
+}
+
 .sidebar-logout {
     display: flex;
     align-items: center;
@@ -34,7 +38,6 @@ main {
     border-radius: 10px;
     color: oklch(0.446 0.03 256.802);
     text-decoration: none;
-    margin-top: auto;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -56,11 +59,9 @@ main {
 }
 
 .sidebar-list li {
-    display: flex;
-    align-items: center;
+    list-style: none;
     color: oklch(0.446 0.03 256.802);
     margin-bottom: 15px;
-    padding: 10px 15px;
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -82,6 +83,7 @@ main {
     text-decoration: none;
     color: inherit;
     width: 100%;
+    padding: 10px 15px;
 }
 
 .dashboard, .create-expense, .categories, .reports {

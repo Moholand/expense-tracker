@@ -102,13 +102,7 @@
                 <td colspan='5'>
                     <div class='table-footer'>
                         <div class='footer-left'>
-                            Showing
-                            {{ $expenses->firstItem() }}
-                            to
-                            {{ $expenses->lastItem() }}
-                            of
-                            {{ $expenses->total() }}
-                            expenses
+                            Showing {{ $expenses->firstItem() }} to {{ $expenses->lastItem() }} of {{ $expenses->total() }} expenses
                         </div>
 
                         <div class="footer-right">
@@ -161,13 +155,13 @@
 
                         <div class="form-group">
                             <label for="edit-category">Category</label>
-                            <select id="edit-category" wire:model="categoryId" class="form-input">
+                            <select id="edit-category" wire:model="category_id" class="form-input">
                                 <option value="">Select a category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                            @error('categoryId') <span class="form-error">{{ $message }}</span> @enderror
+                            @error('category_id') <span class="form-error">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="form-group">
