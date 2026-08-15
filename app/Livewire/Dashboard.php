@@ -77,7 +77,7 @@ class Dashboard extends Component
 
     public function getCategoryStyles(string $color): array
     {
-        $styles = config('categories.color_styles');
+        $styles = config('categories.colors');
 
         return $styles[$color] ?? $styles['gray'];
     }

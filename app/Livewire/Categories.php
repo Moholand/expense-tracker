@@ -4,49 +4,47 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Categories extends Component
 {
     public bool $showModal = false;
-
     public ?int $editingCategoryId = null;
-
     public string $name = '';
-
     public string $description = '';
-
     public string $color = 'gray';
-
     public array $colors;
 
     public function boot(): void
     {
-        $this->colors = config('categories.colors');
+        $this->colors = array_keys(config('categories.colors'));
     }
 
-    public function render()
+    #[Layout('layouts.app')]
+    public function render(): View
     {
         $categories = $this->getCategories();
 
-        return view('livewire.categories', compact('categories'))->layout('layouts.app');
+        return view('livewire.categories', compact('categories'));
     }
 
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:30',
+            'name'        => 'required|string|max:30',
             'description' => 'required|string',
-            'color' => 'required|string|in:' . implode(',', $this->colors),
+            'color'       => 'required|string|in:' . implode(',', $this->colors),
         ];
     }
 
     public function validationAttributes(): array
     {
         return [
-            'name' => 'category name',
+            'name'        => 'category name',
             'description' => 'description',
-            'color' => 'color',
+            'color'       => 'color',
         ];
     }
 
@@ -94,9 +92,7 @@ class Categories extends Component
 
     public function updateCategory(): void
     {
-        $validated = $this->validate();
-
-        Category::findOrFail($this->editingCategoryId)->update($validated);
+        Category::findOrFail($this->editingCategoryId)->update($this->validate());
 
         $this->closeModal();
         session()->flash('success', 'Category updated successfully.');
@@ -110,7 +106,7 @@ class Categories extends Component
 
     public function getColorStyles(string $color): array
     {
-        $styles = config('categories.color_styles');
+        $styles = config('categories.colors');
 
         return $styles[$color] ?? $styles['gray'];
     }

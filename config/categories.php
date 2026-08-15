@@ -2,16 +2,6 @@
 
 return [
     'colors' => [
-        'orange',
-        'blue',
-        'purple',
-        'pink',
-        'yellow',
-        'green',
-        'gray',
-    ],
-
-    'color_styles' => [
         'orange' => ['bg' => '#fff3e0', 'color' => '#e65100'],
         'blue'   => ['bg' => '#e3f2fd', 'color' => '#1565c0'],
         'purple' => ['bg' => '#f3e5f5', 'color' => '#7b1fa2'],
