@@ -59,7 +59,7 @@
             <input type="date" wire:model.live="endDate" class="filter-date" placeholder="mm/dd/yyyy" />
         </div>
     </div>
-    <table class="expense-list" wire:loading.class="table-loading">
+    <table class="table-list" wire:loading.class="table-loading">
         <thead>
             <tr>
                 <th>Date</th>

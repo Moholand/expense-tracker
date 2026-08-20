@@ -20,4 +20,10 @@ class Category extends Model
     {
         return $this->hasMany(Expense::class);
     }
+
+    public function getStyles(): array
+    {
+        $styles = config('categories.colors');
+        return $styles[$this->color] ?? $styles['gray'];
+    }
 }

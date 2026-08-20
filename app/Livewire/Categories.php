@@ -16,16 +16,20 @@ class Categories extends Component
     public string $description = '';
     public string $color = 'gray';
     public array $colors;
+    public array $colorOptions;
 
     public function boot(): void
     {
         $this->colors = array_keys(config('categories.colors'));
+        $this->colorOptions = config('categories.colors');
     }
 
     #[Layout('layouts.app')]
     public function render(): View
     {
-        $categories = $this->getCategories();
+        $categories = $this->loadCategories(
+            $this->getCategories()
+        );
 
         return view('livewire.categories', compact('categories'));
     }
@@ -104,18 +108,19 @@ class Categories extends Component
         session()->flash('success', 'Category deleted successfully.');
     }
 
-    public function getColorStyles(string $color): array
-    {
-        $styles = config('categories.colors');
-
-        return $styles[$color] ?? $styles['gray'];
-    }
-
     private function getCategories(): Collection
     {
         return Category::query()
             ->withCount('expenses')
             ->withSum('expenses', 'amount')
             ->get();
+    }
+
+    private function loadCategories(Collection $categories): Collection
+    {
+        foreach ($categories as $category) {
+            $category->setAttribute('styles', $category->getStyles());
+        }
+        return $categories;
     }
 }

@@ -69,17 +69,10 @@ class Dashboard extends Component
         $expenses = $query->with('category')->latest()->paginate(self::PAGINATE);
 
         foreach ($expenses as $expense) {
-            $expense->setAttribute('styles', $this->getCategoryStyles($expense->category->color));
+            $expense->setAttribute('styles', $expense->category->getStyles());
         }
 
         return $expenses;
-    }
-
-    public function getCategoryStyles(string $color): array
-    {
-        $styles = config('categories.colors');
-
-        return $styles[$color] ?? $styles['gray'];
     }
 
     public function rules(): array

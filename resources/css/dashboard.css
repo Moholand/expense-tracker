@@ -150,7 +150,7 @@
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.expense-list {
+.table-list {
     background-color: #ffffff;
     border-radius: 20px;
     width: 100%;
@@ -158,36 +158,36 @@
     overflow: hidden;
 }
 
-.expense-list thead {
+.table-list thead {
     background-color: oklch(.985 .002 247.839);
 }
 
-.expense-list tr {
+.table-list tr {
     border-bottom: 1px solid #ececec;
 }
 
-.expense-list td, .expense-list th {
+.table-list td, .table-list th {
     padding: 16px 20px;
     text-align: left;
 }
 
-.expense-list th {
+.table-list th {
     font-size: 18px;
 }
 
-.expense-list td {
+.table-list td {
     font-size: 16px;
     color: oklch(.446 .03 256.802);
     font-weight: 500;
 }
 
-.expense-list .category-badge span {
+.table-list .category-badge span {
     font-size: 15px;
     padding: 5px 10px;
     border-radius: 20px;
 }
 
-.expense-list tfoot td {
+.table-list tfoot td {
     padding: 12px 16px;
     border-top: 1px solid #e5e7eb;
 }

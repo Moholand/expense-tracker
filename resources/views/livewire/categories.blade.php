@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <table class="expense-list">
+    <table class="table-list">
         <thead>
             <tr>
                 <th>Category Name</th>
@@ -25,11 +25,10 @@
         </thead>
         <tbody>
             @foreach($categories as $category)
-                @php $styles = $this->getColorStyles($category->color); @endphp
                 <tr>
                     <td>{{ $category->name }}</td>
                     <td>
-                        <span class="color-badge" style="background-color: {{ $styles['bg'] }}; color: {{ $styles['color'] }};">
+                        <span class="color-badge" style="background-color: {{ $category->styles['bg'] }}; color: {{ $category->styles['color'] }};">
                             {{ $category->color }}
                         </span>
                     </td>
@@ -78,14 +77,13 @@
                         <div class="form-group">
                             <label>Color</label>
                             <div class="color-picker">
-                                @foreach($colors as $colorOption)
-                                    @php $styles = $this->getColorStyles($colorOption); @endphp
-                                    <label class="color-option {{ $color === $colorOption ? 'selected' : '' }}">
-                                        <input type="radio" wire:model="color" value="{{ $colorOption }}" class="sr-only">
-                                        <span class="color-swatch" style="background-color: {{ $styles['bg'] }}; border-color: {{ $styles['color'] }};">
-                                            <span class="color-dot" style="background-color: {{ $styles['color'] }};"></span>
+                                @foreach($colorOptions as $colorName => $colorOption)
+                                    <label class="color-option {{ $color === $colorName ? 'selected' : '' }}">
+                                        <input type="radio" wire:model="color" value="{{ $colorName }}" class="sr-only">
+                                        <span class="color-swatch" style="background-color: {{ $colorOption['bg'] }}; border-color: {{ $colorOption['color'] }};">
+                                            <span class="color-dot" style="background-color: {{ $colorOption['color'] }};"></span>
                                         </span>
-                                        <span class="color-label" style="color: {{ $styles['color'] }};">{{ $colorOption }}</span>
+                                        <span class="color-label" style="color: {{ $colorOption['color'] }};">{{ $colorName }}</span>
                                     </label>
                                 @endforeach
                             </div>
