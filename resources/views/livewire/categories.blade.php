@@ -55,7 +55,7 @@
 
     @if($showModal)
         <div class="modal-overlay" wire:click="closeModal">
-            <div class="modal-content" wire:click.stop>
+            <div class="modal-content" x-on:click.stop>
                 <div class="modal-header">
                     <h2>{{ $editingCategoryId ? 'Edit Category' : 'Create Category' }}</h2>
                     <button class="modal-close" wire:click="closeModal">&times;</button>
@@ -76,10 +76,10 @@
 
                         <div class="form-group">
                             <label>Color</label>
-                            <div class="color-picker">
+                            <div class="color-picker" x-data="{ selected: @js($color) }">
                                 @foreach($colorOptions as $colorName => $colorOption)
-                                    <label class="color-option {{ $color === $colorName ? 'selected' : '' }}">
-                                        <input type="radio" wire:model="color" value="{{ $colorName }}" class="sr-only">
+                                    <label class="color-option" :class="selected === @js($colorName) ? 'selected' : ''" @click="selected = @js($colorName); $wire.set('color', @js($colorName))">
+                                        <input type="radio" :checked="selected === @js($colorName)" value="{{ $colorName }}" class="sr-only">
                                         <span class="color-swatch" style="background-color: {{ $colorOption['bg'] }}; border-color: {{ $colorOption['color'] }};">
                                             <span class="color-dot" style="background-color: {{ $colorOption['color'] }};"></span>
                                         </span>
