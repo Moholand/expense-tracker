@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Livewire\Expenses;
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Expense;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 
 class CreateExpense extends Component
 {
@@ -14,19 +16,17 @@ class CreateExpense extends Component
     public int $amount;
     public string $description;
 
-    protected function rules(): array
-    {
-        return [
-            'date'        => ['required', 'date'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'amount'      => ['required', 'numeric', 'min:0'],
-            'description' => ['nullable', 'string', 'max:1000'],
-        ];
-    }
-
     public function mount(): void
     {
         $this->date = now()->format('Y-m-d');
+    }
+
+    #[Layout('layouts.app')]
+    public function render(): View
+    {
+        $categories = $this->getCategories();
+
+        return view('livewire.create-expense', compact('categories'));
     }
 
     public function save()
@@ -38,11 +38,14 @@ class CreateExpense extends Component
         return redirect()->route('dashboard')->with('success', 'Expense successfully created!');
     }
 
-    public function render()
+    protected function rules(): array
     {
-        $data = ['categories' => $this->getCategories()];
-
-        return view('livewire.expenses.create-expense', $data)->layout('layouts.app');
+        return [
+            'date'        => ['required', 'date'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'amount'      => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ];
     }
 
     private function createExpense(): void
@@ -58,6 +61,9 @@ class CreateExpense extends Component
 
     private function getCategories(): Collection
     {
-        return Category::orderBy('name')->get();
+        return Category::query()
+            ->select(['id', 'name'])
+            ->orderBy('name')
+            ->get();
     }
 }

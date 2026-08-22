@@ -38,7 +38,7 @@
                     @endforeach
                 </select>
 
-                <a href="{{ route('categories.create') }}"
+                <a href="{{ route('categories') }}"
                    class="inline-flex items-center gap-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus" aria-hidden="true">
                         <path d="M5 12h14"></path>
