@@ -76,10 +76,10 @@
 
                         <div class="form-group">
                             <label>Color</label>
-                            <div class="color-picker" x-data="{ selected: @js($color) }">
+                            <div class="color-picker" x-data="{ selected: $wire.entangle('color').live }">
                                 @foreach($colorOptions as $colorName => $colorOption)
-                                    <label class="color-option" :class="selected === @js($colorName) ? 'selected' : ''" @click="selected = @js($colorName); $wire.set('color', @js($colorName))">
-                                        <input type="radio" :checked="selected === @js($colorName)" value="{{ $colorName }}" class="sr-only">
+                                    <label class="color-option" :class="selected === @js($colorName) ? 'selected' : ''">
+                                        <input type="radio" x-model="selected" value="{{ $colorName }}" class="sr-only">
                                         <span class="color-swatch" style="background-color: {{ $colorOption['bg'] }}; border-color: {{ $colorOption['color'] }};">
                                             <span class="color-dot" style="background-color: {{ $colorOption['color'] }};"></span>
                                         </span>
