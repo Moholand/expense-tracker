@@ -18,6 +18,19 @@ class Categories extends Component
     public array $colors;
     public array $colorOptions;
 
+    public function mount(): void
+    {
+        if (request()->boolean('create')) {
+            session()->flash('open_category_create_modal', true);
+            $this->redirectRoute('categories');
+            return;
+        }
+
+        if (session()->pull('open_category_create_modal', false)) {
+            $this->showModal = true;
+        }
+    }
+
     public function boot(): void
     {
         $this->colors = array_keys(config('categories.colors'));
@@ -62,6 +75,13 @@ class Categories extends Component
     {
         $this->showModal = false;
         $this->resetForm();
+    }
+
+    public function selectColor(string $color): void
+    {
+        if (in_array($color, $this->colors, true)) {
+            $this->color = $color;
+        }
     }
 
     public function resetForm(): void

@@ -76,15 +76,14 @@
 
                         <div class="form-group">
                             <label>Color</label>
-                            <div class="color-picker" x-data="{ selected: $wire.entangle('color').live }">
+                            <div class="color-picker">
                                 @foreach($colorOptions as $colorName => $colorOption)
-                                    <label class="color-option" :class="selected === @js($colorName) ? 'selected' : ''">
-                                        <input type="radio" x-model="selected" value="{{ $colorName }}" class="sr-only">
+                                    <button type="button" wire:click="selectColor('{{ $colorName }}')" class="color-option {{ $color === $colorName ? 'selected' : '' }}">
                                         <span class="color-swatch" style="background-color: {{ $colorOption['bg'] }}; border-color: {{ $colorOption['color'] }};">
                                             <span class="color-dot" style="background-color: {{ $colorOption['color'] }};"></span>
                                         </span>
                                         <span class="color-label" style="color: {{ $colorOption['color'] }};">{{ $colorName }}</span>
-                                    </label>
+                                    </button>
                                 @endforeach
                             </div>
                             @error('color') <span class="form-error">{{ $message }}</span> @enderror
