@@ -7,6 +7,8 @@ use App\Models\Expense;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Reports extends Component
@@ -16,16 +18,6 @@ class Reports extends Component
     public array $selectedCategories = [];
     public string $chartType = 'pie';
     public string $timePeriod = 'weekly';
-
-    private const CHART_COLORS = [
-        'orange' => '#F97316',
-        'blue'   => '#3B82F6',
-        'purple' => '#8B5CF6',
-        'pink'   => '#EC4899',
-        'yellow' => '#EAB308',
-        'green'  => '#22C55E',
-        'gray'   => '#6B7280',
-    ];
 
     public function boot(): void
     {
@@ -37,7 +29,8 @@ class Reports extends Component
         }
     }
 
-    public function render()
+    #[Layout('layouts.app')]
+    public function render(): View
     {
         $userId = auth()->id();
 
@@ -51,12 +44,7 @@ class Reports extends Component
             'weeklySpending'    => $this->getWeeklySpending(),
             'monthlySpending'   => $this->getMonthlySpending(),
             'timePeriod'        => $this->timePeriod,
-        ])->layout('layouts.app');
-    }
-
-    public function generateReport(): void
-    {
-        // Trigger re-render with current filters
+        ]);
     }
 
     public function toggleCategory(int $categoryId): void
@@ -78,7 +66,7 @@ class Reports extends Component
         $this->timePeriod = $period === 'monthly' ? 'monthly' : 'weekly';
     }
 
-    private function getBaseQuery(int $userId)
+    private function getBaseQuery(int $userId): Builder
     {
         return Expense::query()
             ->where('user_id', $userId)
@@ -102,6 +90,7 @@ class Reports extends Component
     private function getAverageWeekly(int $userId): float
     {
         $total = $this->getTotalExpenses($userId);
+
         $start = Carbon::parse($this->startDate);
         $end = Carbon::parse($this->endDate);
         $weeks = max(1, $start->diffInWeeks($end) ?: 1);
@@ -190,12 +179,14 @@ class Reports extends Component
 
         $grandTotal = (float) $breakdown->sum('total');
 
+        $colors  = config('categories.colors');
+
         return $breakdown->map(fn ($row) => [
             'name'       => $row->name,
             'amount'     => (float) $row->total,
             'percentage' => $grandTotal > 0 ? round(($row->total / $grandTotal) * 100, 1) : 0,
             'color'      => $row->color,
-            'hex'        => self::CHART_COLORS[$row->color] ?? self::CHART_COLORS['gray'],
+            'hex'        => isset($colors[$row->color]) ? $colors[$row->color]['color'] : $colors['gray']['color'],
         ])->toArray();
     }
 }
