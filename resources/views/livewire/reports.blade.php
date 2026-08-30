@@ -99,161 +99,23 @@
         </div>
 
         @if($chartType === 'pie')
-            @php
-                $size = 280;
-                $center = $size / 2;
-                $radius = $size / 5;
-                $circumference = 2 * pi() * $radius;
-                $offset = 0;
-            @endphp
-
-            <div class="reports-chart-wrapper">
-                <div class="reports-pie-chart-container" style="position: relative; width: {{ $size }}px; height: {{ $size }}px;">
-                    <svg
-                        viewBox="0 0 {{ $size }} {{ $size }}"
-                        width="{{ $size }}"
-                        height="{{ $size }}"
-                        style="transform: rotate(-90deg);"
-                    >
-                        @foreach($categoryBreakdown as $index => $cat)
-                            @php
-                                $segmentLength = ($cat['percentage'] / 100) * $circumference;
-                            @endphp
-                            <circle
-                                cx="{{ $center }}"
-                                cy="{{ $center }}"
-                                r="{{ $radius }}"
-                                fill="none"
-                                stroke="{{ $cat['hex'] }}"
-                                stroke-width="{{ 2 * $radius }}"
-                                stroke-dasharray="{{ $segmentLength }} {{ $circumference - $segmentLength }}"
-                                stroke-dashoffset="{{ -$offset }}"
-                            />
-                            @php
-                                $offset += $segmentLength;
-                            @endphp
-                        @endforeach
-                    </svg>
-
-                    @php
-                        $labelRadius = $center + 35;
-                        $angle = -90;
-                    @endphp
-
-                    @foreach($categoryBreakdown as $cat)
-                        @php
-                            $midAngle = $angle + ($cat['percentage'] / 360) * 360 / 2;
-                            $midAngleRad = deg2rad($midAngle);
-                            $labelX = $center + $labelRadius * cos($midAngleRad);
-                            $labelY = $center + $labelRadius * sin($midAngleRad);
-                            $angle += ($cat['percentage'] / 100) * 360;
-                        @endphp
-                        <span
-                            class="reports-chart-label"
-                            style="
-                                position: absolute;
-                                left: {{ $labelX }}px;
-                                top: {{ $labelY }}px;
-                                transform: translate(-50%, -50%);
-                                color: {{ $cat['hex'] }};
-                                font-size: 13px;
-                                font-weight: 500;
-                                white-space: nowrap;
-                            "
-                        >{{ $cat['name'] }}: {{ $cat['percentage'] }}%</span>
-                    @endforeach
-                </div>
-
-                <div class="reports-legend">
-                    @foreach($categoryBreakdown as $cat)
-                        <div class="reports-legend-item">
-                            <span class="reports-legend-dot" style="background-color: {{ $cat['hex'] }};"></span>
-                            <span class="reports-legend-name">{{ $cat['name'] }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+            <livewire:chart.pie-chart
+                :key="md5(json_encode($categoryBreakdown))"
+                :categoryBreakdown="$categoryBreakdown"
+            />
         @else
-            @php
-                $chartWidth = 750;
-                $chartHeight = 350;
-                $padTop = 20;
-                $padRight = 20;
-                $padBottom = 100;
-                $padLeft = 80;
-
-                $maxAmount = !empty($categoryBreakdown) ? max(array_column($categoryBreakdown, 'amount')) : 0;
-                $niceMax = max(1, ceil($maxAmount / 55) * 55);
-                $plotHeight = $chartHeight - $padTop - $padBottom;
-                $plotWidth = $chartWidth - $padLeft - $padRight;
-
-                $barCount = count($categoryBreakdown);
-                $barSlotWidth = $barCount > 0 ? $plotWidth / $barCount : $plotWidth;
-                $barWidth = $barSlotWidth * 0.6;
-                $barOffset = $barSlotWidth * 0.2;
-
-                $yTicks = [0, $niceMax / 4, $niceMax / 2, 3 * $niceMax / 4, $niceMax];
-            @endphp
-
-            <div class="reports-chart-wrapper">
-                <div class="reports-bar-chart">
-                    <svg viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}" width="100%" preserveAspectRatio="xMidYMid meet">
-                        @foreach($yTicks as $tick)
-                            @php
-                                $y = $padTop + $plotHeight - ($tick / $niceMax) * $plotHeight;
-                            @endphp
-                            <line
-                                x1="{{ $padLeft }}" y1="{{ $y }}"
-                                x2="{{ $chartWidth - $padRight }}" y2="{{ $y }}"
-                                stroke="#e5e7eb" stroke-dasharray="4,4"
-                            />
-                            <text
-                                x="{{ $padLeft - 10 }}" y="{{ $y + 4 }}"
-                                text-anchor="end"
-                            >{{ $tick }}</text>
-                        @endforeach
-
-                        <line
-                            x1="{{ $padLeft }}" y1="{{ $padTop + $plotHeight }}"
-                            x2="{{ $chartWidth - $padRight }}" y2="{{ $padTop + $plotHeight }}"
-                            stroke="#e5e7eb" stroke-width="1"
-                        />
-
-                        @foreach($categoryBreakdown as $index => $cat)
-                            @php
-                                $barHeight = ($cat['amount'] / $niceMax) * $plotHeight;
-                                $x = $padLeft + ($index * $barSlotWidth) + $barOffset;
-                                $y = $padTop + $plotHeight - $barHeight;
-                            @endphp
-                            <rect
-                                x="{{ $x }}" y="{{ $y }}"
-                                width="{{ $barWidth }}" height="{{ $barHeight }}"
-                                fill="#8B5CF6" rx="4"
-                            />
-                        @endforeach
-
-                        @foreach($categoryBreakdown as $index => $cat)
-                            @php
-                                $x = $padLeft + ($index * $barSlotWidth) + ($barSlotWidth / 2);
-                                $y = $padTop + $plotHeight + 16;
-                            @endphp
-                            <text
-                                x="{{ $x }}" y="{{ $y }}"
-                                text-anchor="end"
-                                transform="rotate(-45, {{ $x }}, {{ $y }})"
-                            >{{ $cat['name'] }}</text>
-                        @endforeach
-                    </svg>
-                </div>
-            </div>
+            <livewire:chart.bar-chart
+                :key="md5(json_encode($categoryBreakdown))"
+                :categoryBreakdown="$categoryBreakdown"
+            />
         @endif
 
         <table class="reports-breakdown-table">
             <thead>
                 <tr>
                     <th>Category</th>
-                    <th style="text-align: right;">Total Amount</th>
-                    <th style="text-align: right;">Percentage</th>
+                    <th style="text-align: center;">Total Amount (Toman)</th>
+                    <th style="text-align: center;">Percentage</th>
                 </tr>
             </thead>
             <tbody>
@@ -265,8 +127,8 @@
                                 {{ $cat['name'] }}
                             </span>
                         </td>
-                        <td class="amount-cell" style="text-align: right;">${{ number_format($cat['amount'], 2) }}</td>
-                        <td class="percent-cell" style="text-align: right;">{{ $cat['percentage'] }}%</td>
+                        <td class="amount-cell" style="text-align: center;">{{ number_format($cat['amount'], 2) }}</td>
+                        <td class="percent-cell" style="text-align: center;">{{ $cat['percentage'] }}%</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -290,118 +152,28 @@
 
         @php
             $spendingData = $timePeriod === 'monthly' ? $monthlySpending : $weeklySpending;
-            $chartWidth = 750;
-            $chartHeight = 350;
-            $padTop = 20;
-            $padRight = 20;
-            $padBottom = 60;
-            $padLeft = 80;
-
-            $maxAmount = !empty($spendingData) ? max(array_column($spendingData, 'total')) : 0;
-            $niceMax = max(1, ceil($maxAmount / 75) * 75);
-            $plotHeight = $chartHeight - $padTop - $padBottom;
-            $plotWidth = $chartWidth - $padLeft - $padRight;
-
-            $dataCount = count($spendingData);
-            $pointSpacing = $dataCount > 1 ? $plotWidth / ($dataCount - 1) : $plotWidth;
-
-            $yTicks = [0, $niceMax * 0.25, $niceMax * 0.5, $niceMax * 0.75, $niceMax];
-
-            $points = [];
-            foreach ($spendingData as $index => $item) {
-                $x = $padLeft + ($index * $pointSpacing);
-                $y = $padTop + $plotHeight - ($item['total'] / $niceMax) * $plotHeight;
-                $points[] = ['x' => $x, 'y' => $y, 'total' => $item['total']];
-            }
-
-            $pathD = '';
-            if (count($points) > 1) {
-                $pathD = 'M ' . $points[0]['x'] . ' ' . $points[0]['y'];
-                for ($i = 0; $i < count($points) - 1; $i++) {
-                    $cp1x = $points[$i]['x'] + $pointSpacing * 0.4;
-                    $cp1y = $points[$i]['y'];
-                    $cp2x = $points[$i + 1]['x'] - $pointSpacing * 0.4;
-                    $cp2y = $points[$i + 1]['y'];
-                    $pathD .= ' C ' . $cp1x . ' ' . $cp1y . ', ' . $cp2x . ' ' . $cp2y . ', ' . $points[$i + 1]['x'] . ' ' . $points[$i + 1]['y'];
-                }
-            }
         @endphp
 
-        <div class="reports-chart-wrapper">
-            <div class="reports-line-chart">
-                <svg viewBox="0 0 {{ $chartWidth }} {{ $chartHeight }}" width="100%" preserveAspectRatio="xMidYMid meet">
-                    @foreach($yTicks as $tick)
-                        @php
-                            $y = $padTop + $plotHeight - ($tick / $niceMax) * $plotHeight;
-                        @endphp
-                        <line
-                            x1="{{ $padLeft }}" y1="{{ $y }}"
-                            x2="{{ $chartWidth - $padRight }}" y2="{{ $y }}"
-                            stroke="#e5e7eb" stroke-dasharray="4,4"
-                        />
-                        <text
-                            x="{{ $padLeft - 10 }}" y="{{ $y + 4 }}"
-                            text-anchor="end"
-                        >${{ number_format($tick, 0) }}</text>
-                    @endforeach
-
-                    <line
-                        x1="{{ $padLeft }}" y1="{{ $padTop + $plotHeight }}"
-                        x2="{{ $chartWidth - $padRight }}" y2="{{ $padTop + $plotHeight }}"
-                        stroke="#e5e7eb" stroke-width="1"
-                    />
-
-                    @foreach($spendingData as $index => $item)
-                        @php
-                            $x = $padLeft + ($index * $pointSpacing);
-                            $y = $padTop + $plotHeight + 20;
-                            $label = $timePeriod === 'monthly' ? \Carbon\Carbon::parse('1 ' . $item['month'])->format('M') : 'Week ' . ($index + 1);
-                        @endphp
-                        <text
-                            x="{{ $x }}" y="{{ $y }}"
-                            text-anchor="middle"
-                        >{{ $label }}</text>
-                    @endforeach
-
-                    @if(!empty($pathD))
-                        <path
-                            d="{{ $pathD }}"
-                            fill="none"
-                            stroke="#8B5CF6"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    @endif
-
-                    @foreach($points as $point)
-                        <circle
-                            cx="{{ $point['x'] }}"
-                            cy="{{ $point['y'] }}"
-                            r="5"
-                            fill="#8B5CF6"
-                            stroke="#ffffff"
-                            stroke-width="2"
-                        />
-                    @endforeach
-                </svg>
-            </div>
-        </div>
+        <livewire:chart.line-chart
+            :key="$timePeriod.'-'.md5(json_encode($spendingData))"
+            :spendingData="$spendingData"
+            :timePeriod="$timePeriod"
+        />
 
         <table class="reports-breakdown-table">
             <thead>
                 <tr>
                     <th>{{ $timePeriod === 'monthly' ? 'Month' : 'Week' }}</th>
-                    <th style="text-align: right;">Transactions</th>
-                    <th style="text-align: right;">Total</th>
+                    <th style="text-align: center;">Transactions</th>
+                    <th style="text-align: center;">Total (Toman)</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($spendingData as $item)
                     <tr>
                         <td>{{ $timePeriod === 'monthly' ? $item['month'] : $item['week'] }}</td>
-                        <td style="text-align: right;">{{ $item['transactions'] }}</td>
-                        <td style="text-align: right;">${{ number_format($item['total'], 2) }}</td>
+                        <td style="text-align: center;">{{ $item['transactions'] }}</td>
+                        <td style="text-align: center;">{{ number_format($item['total'], 2) }}</td>
                     </tr>
                 @endforeach
             </tbody>
