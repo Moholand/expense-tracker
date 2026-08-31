@@ -100,12 +100,12 @@
 
         @if($chartType === 'pie')
             <livewire:chart.pie-chart
-                :key="md5(json_encode($categoryBreakdown))"
+                :key="'pie-'.md5(json_encode($categoryBreakdown))"
                 :categoryBreakdown="$categoryBreakdown"
             />
         @else
             <livewire:chart.bar-chart
-                :key="md5(json_encode($categoryBreakdown))"
+                :key="'bar-'.md5(json_encode($categoryBreakdown))"
                 :categoryBreakdown="$categoryBreakdown"
             />
         @endif
