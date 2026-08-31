@@ -1,66 +1,59 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Expense Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Project Overview
+A personal expense management application built with Laravel and Livewire. Users can create, edit, and track expenses by category, filter and search transactions, manage categories, and analyze spending patterns through reports with interactive charts. All data is user-scoped and requires authentication. Amounts are tracked in **Toman**.
 
-## About Laravel
+## Key Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Authentication & Profile
+- Registration, Login, Email Verification, Password Reset / Confirmation (Laravel Breeze)
+- Profile update and account deletion
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Dashboard
+- Paginated expense list (10 per page) with category badge and styles
+- Total spending sum for current filtered view
+- Search by description
+- Filter by category and date range (from / to)
+- Inline edit via modal and delete with validation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Create Expense
+- Form with date (defaults to today), category select, amount, and description
+- Validation: `date` required, `category_id` must exist, `amount` numeric min 0, `description` nullable max 1000
+- Redirect to dashboard on success
 
-## Learning Laravel
+### Categories
+- CRUD for categories (name, description, color)
+- 7 predefined colors: orange, blue, purple, pink, yellow, green, gray (defined in `config/categories.php`)
+- List displays expense count and total amount per category
+- Modal-based create/edit with validation (`name` max 30, `description` required)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Reports
+- **Filters:** Date range (defaults to current month) and multi-select category pills
+- **Stats:** Total Expenses (Toman), Transaction Count, Average Weekly Spending
+- **Breakdown by Category:** Toggle between Pie Chart and Bar Chart (SVG), plus table with total amount and percentage per category
+- **Spending Over Time:** Line Chart (SVG bezier) with Weekly / Monthly toggle, plus table with transactions and total per period
+- Charts implemented as Livewire components: `App\Livewire\Chart\PieChart`, `BarChart`, `LineChart`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Technologies Used
+- **Backend:** PHP 8.1+, Laravel 10, Eloquent ORM
+- **Frontend / Interactivity:** Livewire 3, Blade, Tailwind CSS (via Laravel Breeze)
+- **Auth:** Laravel Breeze, Laravel Sanctum
+- **Database:** MySQL / SQLite (configurable via `config/database.php`), Migrations
+- **Tooling:** Composer, Laravel Pint, PHPUnit
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Project Structure
+```
+app/Livewire/         -> Dashboard, CreateExpense, Categories, Reports, Sidebar, Chart/*
+app/Models/           -> Expense, Category, User
+resources/views/livewire/ -> Blade views + charts/*
+config/categories.php -> Color definitions
+routes/web.php        -> dashboard, categories, reports, expenses/create (auth middleware)
+```
 
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Requirements
+- PHP ^8.1
+- Composer
+- Laravel 10, Livewire ^3.6
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+MIT

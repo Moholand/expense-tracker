@@ -37,6 +37,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', Dashboard::class)->name('dashboard');
     Route::get('categories', Categories::class)->name('categories');
     Route::get('reports', Reports::class)->name('reports');
-
     Route::get('expenses/create', CreateExpense::class)->name('expenses.create');
 });
